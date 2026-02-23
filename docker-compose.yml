@@ -8,6 +8,19 @@ services:
     ports:
       - "8080:8080"
 
+  db:
+    image: postgres:14
+    container_name: pccthKmBot-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: pccthKmBot-db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
   n8n-db:
     image: postgres:14
     container_name: n8n-db
@@ -42,6 +55,7 @@ services:
       - n8n_data:/home/node/.n8n
     depends_on:
       - n8n-db
+      - db
 
   ngrok:
     image: ngrok/ngrok:latest
@@ -58,3 +72,6 @@ services:
 volumes:
   n8n_postgres_data:
   n8n_data:
+  postgres_data:
+
+
