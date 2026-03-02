@@ -23,10 +23,17 @@ public class LineConfigController {
 
     @PostMapping("/set-webhook")
     public ResponseEntity<?> setLineWebhook(@Valid @RequestBody WebhookRequestDTO request) {
-        lineWebhookService.setLineWebhookUrl(request.getChannelAccessToken(), request.getWebhookUrl());
+
+        String verifyResponse = lineWebhookService.setAndVerifyWebhook(
+                request.getChannelAccessToken(),
+                request.getWebhookUrl()
+        );
+
         return ResponseEntity.ok(Map.of(
                 "responseStatus", 200,
-                "responseMessage", "LINE webhook URL updated successfully",
-                "webhookUrl", request.getWebhookUrl()));
+                "responseMessage", "LINE webhook set and verified successfully",
+                "webhookUrl", request.getWebhookUrl(),
+                "verifyResult", verifyResponse
+        ));
     }
 }
