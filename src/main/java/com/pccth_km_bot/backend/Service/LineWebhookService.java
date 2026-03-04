@@ -30,7 +30,7 @@ public class LineWebhookService {
             Map<String, String> body = Map.of("endpoint", webhookUrl);
             HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
 
-            // 1️⃣ Set webhook
+            // Set webhook
             restTemplate.exchange(
                     LINE_SET_WEBHOOK_URL,
                     HttpMethod.PUT,
@@ -38,7 +38,7 @@ public class LineWebhookService {
                     String.class
             );
 
-            // 2️⃣ Verify กับ LINE
+            // Verify กับ LINE
             HttpEntity<Void> testRequest = new HttpEntity<>(headers);
 
             restTemplate.exchange(
@@ -48,7 +48,7 @@ public class LineWebhookService {
                     String.class
             );
 
-            // 3️⃣ ยิง test เข้า endpoint ของเราเอง
+            // ยิง test เข้า endpoint ของเราเอง
             ResponseEntity<String> n8nCheck = restTemplate.postForEntity(
                     webhookUrl,
                     "{\"healthCheck\":\"n8n-test\"}",
