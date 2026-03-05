@@ -30,6 +30,14 @@ public class LineWebhookService {
             Map<String, String> body = Map.of("endpoint", webhookUrl);
             HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
 
+            // Set webhook
+            restTemplate.exchange(
+                    LINE_SET_WEBHOOK_URL,
+                    HttpMethod.PUT,
+                    request,
+                    String.class
+            );
+
             // Verify กับ LINE
             HttpEntity<Void> testRequest = new HttpEntity<>(headers);
 
@@ -40,13 +48,20 @@ public class LineWebhookService {
                     String.class
             );
 
-            // Set webhook
-            restTemplate.exchange(
-                    LINE_SET_WEBHOOK_URL,
-                    HttpMethod.PUT,
-                    request,
+            // ยิง test เข้า endpoint ของเราเอง
+            ResponseEntity<String> n8nCheck = restTemplate.postForEntity(
+                    webhookUrl,
+                    "{\"healthCheck\":\"n8n-test\"}",
                     String.class
             );
+
+            if (n8nCheck.getBody() == null ||
+                    !n8nCheck.getBody().contains("Workflow was started")) {
+
+                throw new RuntimeException(
+                        "Webhook endpoint is reachable but NOT connected to n8n"
+                );
+            }
 
             return "Webhook set, verified, and connected to n8n successfully";
 
