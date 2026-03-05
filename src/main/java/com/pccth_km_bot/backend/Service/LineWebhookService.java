@@ -1,5 +1,6 @@
 package com.pccth_km_bot.backend.Service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,8 +14,12 @@ import java.util.Map;
 @Service
 public class LineWebhookService {
 
-    private static final String LINE_SET_WEBHOOK_URL = "https://api.line.me/v2/bot/channel/webhook/endpoint";
-    private static final String LINE_TEST_WEBHOOK_URL = "https://api.line.me/v2/bot/channel/webhook/test";
+    @Value("${line.set.webhook}")
+    private String lineSetWebhook;
+
+    @Value("${line.test.webhook}")
+    private String lineTestWebhook;
+
     private final RestTemplate restTemplate;
 
     public LineWebhookService(RestTemplate restTemplate) {
@@ -32,7 +37,7 @@ public class LineWebhookService {
 
             // Set webhook
             restTemplate.exchange(
-                    LINE_SET_WEBHOOK_URL,
+                    lineSetWebhook,
                     HttpMethod.PUT,
                     request,
                     String.class
@@ -42,7 +47,7 @@ public class LineWebhookService {
             HttpEntity<Void> testRequest = new HttpEntity<>(headers);
 
             restTemplate.exchange(
-                    LINE_TEST_WEBHOOK_URL,
+                    lineTestWebhook,
                     HttpMethod.POST,
                     testRequest,
                     String.class
